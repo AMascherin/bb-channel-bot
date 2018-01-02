@@ -1,0 +1,15 @@
+{
+  "name": "bbchannelbot",
+  "version": "1.0.0",
+  "description": "spoiler bot and other stuff",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "alessandro mascherin",
+  "license": "ISC",
+  "dependencies": {
+    "discord-spoiler-bot": "^2.0.5",
+    "discord.js": "^11.2.1"
+  }
+}
