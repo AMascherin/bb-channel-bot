@@ -1,6 +1,6 @@
 {
   "name": "bbchannelbot",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "spoiler bot and other stuff",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "discord-spoiler-bot": "^2.0.5",
-    "discord.js": "^11.2.1"
+    "discord.js": "^11.2.1",
+    "enmap": "^0.4.2",
+    "enmap-level": "^1.0.0"
   }
 }
