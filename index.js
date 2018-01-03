@@ -1,46 +1,49 @@
 var Discord = require ('discord.js');
 const SpoilerBot = require('discord-spoiler-bot');
 const client = new Discord.Client();
-client.login(process.env.BOT_TOKEN);
+
+const {promisify} = require ("util");
+const readdir = promisify(require("fs").readdir);
+const Enmap = require("enmap");
+const EnmapLevel = require("enmap-level");
+
+const client = new Discord.Client();
+//Useful functions for the client
+require ("./utils/function.js")(client);
 
 
-client.on("ready", () => {
-  // This event will run if the bot starts, and logs in, successfully.
-  console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-  // Example of changing the bot's playing game to something useful. `client.user` is what the
-  // docs refer to as the "ClientUser".
-  client.user.setStatus("dnd");
-  client.user.setPresence({
-	game: {
-		name: `Fate/Extra CCC`,
-		type: 0
-    }
-   });
-});
+client.commands = new Enmap();
+client.aliases = new Enmap();
+
+//client.settings = new Enmap({provider: new EnmapLevel({name:settings})});
+//client.events = new Enmap();
+
+const init = async () => {
+    const cmdFiles = await readdir("./commands/");
+    //Loading commands
+    cmdFiles.forEach (f=>{
+        if(!f.endsWith(".js")) return;
+        const response = client.loadCommand(f);
+        if(response) console.log(response);
+    });
+
+    // Then we load events, which will include our message and ready event.
+    const evtFiles = await readdir("./events/");
+    evtFiles.forEach(file => {
+      const eventName = file.split(".")[0];
+      const event = require(`./events/${file}`);
+      // This line is awesome by the way. Just sayin'.
+      client.on(eventName, event.bind(null, client));
+      delete require.cache[require.resolve(`./events/${file}`)];
+    });
+
+    //Client login  
+    client.login(process.env.BOT_TOKEN);
+
+};
 
 
-let prefix = "$";
-client.on('message', async message => {
-    // It's good practice to ignore other bots. This also makes your bot ignore itself
-    // and not get into a spam loop (we call that "botception").
-    if (message.author.id === client.user.id || message.author.bot) return;
-    if (!message.content.startsWith(prefix)) return;
-
-    const args = message.content.slice(prefix.length).trim().split(/ +/g);
-    const cmd = args.shift().toLowerCase();
-
-   switch(cmd) {
-      case 'ping':
-          message.reply('pong!');
-          break;
-      case 'help':
-          var msg = "Scrivi così il tuo messaggio: \n Descrizione spoiler:spoiler:Testo da nascondere";
-          message.reply(msg);
-          break;
-     }
-});
-
-
+init();
 
 
 //Spoiler Bot implementation
