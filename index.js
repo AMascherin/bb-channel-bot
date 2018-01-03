@@ -7,7 +7,6 @@ const readdir = promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const EnmapLevel = require("enmap-level");
 
-const client = new Discord.Client();
 //Useful functions for the client
 require ("./utils/function.js")(client);
 
